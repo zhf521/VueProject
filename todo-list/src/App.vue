@@ -1,7 +1,7 @@
 <template>
   <div class="todo-container">
     <div class="todo-wrap">
-      <TodoHeader></TodoHeader>
+      <TodoHeader :addTodo="addTodo"></TodoHeader>
       <TodoList :todos="todos"></TodoList>
       <TodoFooter></TodoFooter>
     </div>
@@ -24,6 +24,11 @@ export default {
         { title: '睡觉', complete: false },
         { title: '敲代码', complete: true },
       ]
+    }
+  },
+  methods: {
+    addTodo(todo) {
+      this.todos.unshift(todo)
     }
   }
 }
