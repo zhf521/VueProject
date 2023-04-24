@@ -19,11 +19,12 @@ export default {
   },
   data() {
     return {
-      todos: [
-        { title: '吃饭', complete: true },
-        { title: '睡觉', complete: false },
-        { title: '敲代码', complete: true },
-      ]
+      todos: JSON.parse(window.localStorage.getItem('todo_key') || '[]')
+      // todos: [
+      //   { title: '吃饭', complete: true },
+      //   { title: '睡觉', complete: false },
+      //   { title: '敲代码', complete: true },
+      // ]
     }
   },
   methods: {
@@ -38,6 +39,14 @@ export default {
     },
     selectAllTodos(check) {
       this.todos.forEach(todo => todo.complete = check)
+    }
+  },
+  watch: {
+    todos: {
+      deep: true,
+      handler: function (value) {
+        window.localStorage.setItem('todo_key', JSON.stringify(value))
+      }
     }
   }
 }
