@@ -2,7 +2,7 @@
   <div class="todo-container">
     <div class="todo-wrap">
       <TodoHeader></TodoHeader>
-      <TodoList></TodoList>
+      <TodoList :todos="todos"></TodoList>
       <TodoFooter></TodoFooter>
     </div>
   </div>
@@ -16,6 +16,15 @@ export default {
   name: 'App',
   components: {
     TodoHeader, TodoList, TodoFooter
+  },
+  data() {
+    return {
+      todos: [
+        { title: '吃饭', complete: true },
+        { title: '睡觉', complete: false },
+        { title: '敲代码', complete: true },
+      ]
+    }
   }
 }
 </script>
