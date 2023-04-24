@@ -2,7 +2,7 @@
   <div class="todo-container">
     <div class="todo-wrap">
       <TodoHeader :addTodo="addTodo"></TodoHeader>
-      <TodoList :todos="todos"></TodoList>
+      <TodoList :todos="todos" :deleteTodo="deleteTodo"></TodoList>
       <TodoFooter></TodoFooter>
     </div>
   </div>
@@ -29,6 +29,9 @@ export default {
   methods: {
     addTodo(todo) {
       this.todos.unshift(todo)
+    },
+    deleteTodo(index) {
+      this.todos.splice(index, 1)
     }
   }
 }
