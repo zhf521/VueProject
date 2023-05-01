@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "less-loader": "^5.0.0",
-    "vue-router": "^3.5.3"
-  }
-}
