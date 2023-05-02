@@ -31,7 +31,7 @@ export default {
 
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .today-recommend {
   .py-container {
     width: 1200px;

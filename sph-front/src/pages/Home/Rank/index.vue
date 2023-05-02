@@ -89,7 +89,7 @@ export default {
 
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .rank {
   width: 1200px;
   margin: 0 auto;

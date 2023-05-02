@@ -23,6 +23,4 @@ export default {
   components: { ListContainer, Recommend, Rank, Like, Floor, Brand },
 }
 </script>
-<style lang="">
-  
-</style>
+<style lang="less" scoped></style>
