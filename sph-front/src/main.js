@@ -6,8 +6,10 @@ import TypeNav from './pages/Home/TypeNav'
 Vue.component(TypeNav.name, TypeNav)
 //引入路由
 import router from './router'
+//测试
+import { reqCategoryList } from './api'
+reqCategoryList()
 Vue.config.productionTip = false
-
 new Vue({
   render: (h) => h(App),
   //注册路由
