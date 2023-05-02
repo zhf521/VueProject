@@ -57,7 +57,7 @@
 </template>
 <script>
 export default {
-
+  name: 'Like',
 }
 </script>
 <style lang="less" scoped>

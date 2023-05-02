@@ -111,7 +111,7 @@
 </template>
 <script>
 export default {
-
+  name: 'ListContainer',
 }
 </script>
 <style lang="less" scoped>
