@@ -14,21 +14,22 @@
         <a href="###">秒杀</a>
       </nav>
       <div class="sort">
-        <div class="all-sort-list2">
+        <!-- 利用事件委托和编程式导航实现 -->
+        <div class="all-sort-list2" @click="goSearch">
           <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId"
             :class="{ cur: currentIndex == index }">
             <h3 @mouseenter="changeIndex(index)" @mouseleave="leaveIndex">
-              <a href="">{{ c1.categoryName }}</a>
+              <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
             </h3>
             <div class="item-list clearfix">
               <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
                 <dl class="fore">
                   <dt>
-                    <a href="">{{ c2.categoryName }}</a>
+                    <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
                   </dt>
                   <dd>
                     <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
-                      <a href="">{{ c3.categoryName }}</a>
+                      <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
                     </em>
                   </dd>
                 </dl>
@@ -42,6 +43,10 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+//引入方式：是把lodash全部功能函数引入
+//import _ from 'lodash'
+//最好的引入方式：按需加载
+import throttle from "lodash/throttle"
 export default {
   name: 'TypeNav',
   data() {
@@ -66,11 +71,40 @@ export default {
   },
   methods: {
     //鼠标进入修改响应式数据currentIndex属性
-    changeIndex(index) {
+    //throttle不要用箭头函数
+    changeIndex: throttle(function (index) {
       this.currentIndex = index
-    },
+    }, 50),
     leaveIndex() {
       this.currentIndex = -1
+    },
+    //进行路由跳转的方法
+    goSearch() {
+      //最好的解决方案：编程式路由和事件委托
+      //利用事件委托：1.点击一定是a标签 2.如何获取参数
+      //把子节点中a标签加上:data-categoryName
+      let element = event.target
+      //获取到当前触发这个事件的节点，需要带有data-categoryname这样的节点
+      //节点有一个属性dataset属性，可以获取节点的自定义属性与属性值
+      let { categoryname, category1id, category2id, category3id } = element.dataset
+      //如果标签身上拥有categoryname一定是a标签
+      if (categoryname) {
+        //整理路由跳转的参数
+        let location = { name: 'search' }
+        let query = { categoryName: categoryname }
+        //一级分类、二级分类、三级分类的a标签
+        if (category1id) {
+          query.category1Id = category1id
+        } else if (category2id) {
+          query.category2Id = category2id
+        } else {
+          query.category3Id = category3id
+        }
+        //整理完参数
+        location.query = query
+        //路由跳转
+        this.$router.push(location)
+      }
     }
   }
 }
