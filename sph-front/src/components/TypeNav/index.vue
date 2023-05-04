@@ -2,7 +2,40 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <div @mouseleave="leaveHandler" @click="goSearch">
+        <h2 class="all" @mouseenter="changeShow">全部商品分类</h2>
+        <transition name="sort">
+          <div class="sort" v-show="show">
+            <!-- 利用事件委托和编程式导航实现 -->
+            <div class="all-sort-list2">
+              <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId"
+                :class="{ cur: currentIndex == index }">
+                <h3 @mouseenter="enterHandler(index)" :class="{ active: currentIndex == index }">
+                  <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
+                </h3>
+                <div class="item-list clearfix" :style="{
+                  display: currentIndex == index ? 'block' : 'none'
+                }">
+                  <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
+                    <dl class="fore">
+                      <dt>
+                        <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName
+                        }}</a>
+                      </dt>
+                      <dd>
+                        <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
+                          <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName
+                          }}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -13,31 +46,6 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <!-- 利用事件委托和编程式导航实现 -->
-        <div class="all-sort-list2" @click="goSearch">
-          <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId"
-            :class="{ cur: currentIndex == index }">
-            <h3 @mouseenter="changeIndex(index)" @mouseleave="leaveIndex">
-              <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{ c1.categoryName }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem" v-for="(c2, index) in c1.categoryChild" :key="c2.categoryId">
-                <dl class="fore">
-                  <dt>
-                    <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="(c3, index) in c2.categoryChild" :key="c3.categoryId">
-                      <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -53,12 +61,16 @@ export default {
     return {
       //存储用户鼠标移动上哪一个一级分类
       currentIndex: -1,
+      show: true,//默认显示
     }
   },
   //组件挂载完毕：可以向服务器发送请求
   mounted() {
-    //通知Vuex发请求，获取数据，存储在仓库中
-    this.$store.dispatch('categoryList')
+    //当组件挂载完毕，让show属性变为false
+    //如果不是Home路由组件，将TypeNav进行隐藏
+    if (this.$route.path != '/home') {
+      this.show = false
+    }
   },
   computed: {
     ...mapState({
@@ -70,42 +82,66 @@ export default {
     })
   },
   methods: {
-    //鼠标进入修改响应式数据currentIndex属性
-    //throttle不要用箭头函数
-    changeIndex: throttle(function (index) {
+    //鼠标进入的方法
+    enterHandler: throttle(function (index) {
+      //修改响应式数据
       this.currentIndex = index
-    }, 50),
-    leaveIndex() {
+      //鼠标进入事件,假如用户的行为过快,会导致项目业务丢失【里面业务有很多，可能出现卡顿现象】。
+      //一句话：用户行为过快,浏览器反应不过来,导致业务丢失!!!!
+      //函数的防抖与节流技术
+      // console.log("处理业务" + index);
+    }, 10),
+    //鼠标移出事件
+    leaveHandler() {
+      //鼠标移出高亮的效果消失
       this.currentIndex = -1
+      //隐藏商品分类
+      //鼠标离开:在search路由下,在修改数据
+      if (this.$route.path != "/home") {
+        this.show = false
+      }
     },
-    //进行路由跳转的方法
-    goSearch() {
-      //最好的解决方案：编程式路由和事件委托
-      //利用事件委托：1.点击一定是a标签 2.如何获取参数
-      //把子节点中a标签加上:data-categoryName
-      let element = event.target
-      //获取到当前触发这个事件的节点，需要带有data-categoryname这样的节点
-      //节点有一个属性dataset属性，可以获取节点的自定义属性与属性值
-      let { categoryname, category1id, category2id, category3id } = element.dataset
-      //如果标签身上拥有categoryname一定是a标签
+    //全部商品分类鼠标进入
+    changeShow() {
+      //鼠标进入:在search路由下,在修改数据
+      if (this.$route.path != "/home") {
+        this.show = true
+      }
+    },
+    //精益求精
+    //将全部的子节点的事件委派给父节点->事件回调就一个
+    goSearch(event) {
+      //第一个问题:div父节点子元素太多【h3、h2、em、dt、dd、dl...a】？你怎么知道你点击的一定是a
+      //第二个问题:要区分一级分类、二级分类、三级分类的a标签【category1Id|category2Id|category2Id】
+      let targetNode = event.target
+      //获取触发事件节点的自定义属性【a:data-categoryName】
+      let { categoryname, category1id, category2id, category3id } =
+        targetNode.dataset
+      //判断点击的是a【不管是1|2|3】
       if (categoryname) {
-        //整理路由跳转的参数
-        let location = { name: 'search' }
-        let query = { categoryName: categoryname }
-        //一级分类、二级分类、三级分类的a标签
-        if (category1id) {
-          query.category1Id = category1id
-        } else if (category2id) {
-          query.category2Id = category2id
-        } else {
-          query.category3Id = category3id
+        //点击只要是a,就是往search模块跳转
+        var location = {
+          name: "search",
+          query: { categoryName: categoryname },
         }
-        //整理完参数
-        location.query = query
-        //路由跳转
+        //一级分类的a
+        if (category1id) {
+          location.query.category1Id = category1id
+        } else if (category2id) {
+          //二级分类的a
+          location.query.category2Id = category2id
+        } else {
+          //三级分类的a
+          location.query.category3Id = category3id
+        }
+        //点击商品分类按钮的时候,如果路径当中携带params参数,需要合并携带给search模块
+        if (this.$route.params.keyword) {
+          location.params = this.$route.params
+          //动态给location配置对象添加query属性
+        }
         this.$router.push(location)
       }
-    }
+    },
   }
 }
 </script>

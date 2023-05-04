@@ -56,7 +56,14 @@ export default {
     //搜索按钮的回调函数：需要向search路由进行跳转
     goSearch() {
       //路由传递参数:
-      this.$router.push({ name: 'search', params: { keyword: this.keyword } },)
+      //如果有query参数也传递过去
+      if (this.$route.query) {
+        let location = {
+          name: 'search', params: { keyword: this.keyword || undefined }
+        }
+        location.query = this.$route.query
+        this.$router.push(location)
+      }
     }
   }
 }
