@@ -3,6 +3,7 @@
     "CATEGORYLIST",
     "Vuex",
     "categoryname",
+    "mockjs",
     "todos"
   ]
 }

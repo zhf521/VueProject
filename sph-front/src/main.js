@@ -8,6 +8,8 @@ Vue.component(TypeNav.name, TypeNav)
 import router from './router'
 //引入仓库
 import store from './store'
+//引入mockServer.js
+import './mock/mockServer'
 Vue.config.productionTip = false
 new Vue({
   render: (h) => h(App),
