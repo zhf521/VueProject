@@ -4,19 +4,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" id="mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="(carousel, index) in bannerList" :key="carousel.id">
-              <img :src="carousel.imgUrl" />
-            </div>
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :list="bannerList"></Carousel>
       </div>
       <div class="right">
         <div class="news">
@@ -114,31 +102,6 @@ export default {
       bannerList: state => state.home.bannerList
     })
   },
-  watch: {
-    //监听bannerList数据的变化：因为这条数据发生过变化---由空数组变为数组里面有四个元素
-    bannerList: {
-      handler(newValue, oldValue) {
-        this.$nextTick(() => {
-          //当执行回调时，保证服务器数据回来了，v-for执行完毕了（轮播图的结构已经有了）
-          //通过watch监听bannerList属性的属性值的变化
-          let mySwiper = new Swiper(document.querySelector('.swiper-container'), {
-            loop: true,
-            //如果需要分页器
-            pagination: {
-              el: '.swiper-pagination',
-              //点击小球的时候也切换图片
-              clickable: true,
-            },
-            //如果需要前进后退按钮
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev'
-            }
-          })
-        })
-      }
-    }
-  }
 }
 </script>
 <style lang="less" scoped>

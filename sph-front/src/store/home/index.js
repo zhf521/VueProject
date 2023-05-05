@@ -1,11 +1,13 @@
 //home模块的小仓库
-import { reqCategoryList, reqGetBannerList } from '@/api'
+import { reqCategoryList, reqGetBannerList, reqFloorList } from '@/api'
 //state:仓库存储数据的地方
 const state = {
   //state中数据默认初始值不能乱写
   categoryList: [],
   //轮播图的数据
   bannerList: [],
+  //floor组件的数据
+  floorList: [],
 }
 //mutations:修改state的唯一手段
 const mutations = {
@@ -14,6 +16,9 @@ const mutations = {
   },
   GETBANNERLIST(state, bannerList) {
     state.bannerList = bannerList
+  },
+  GETFLOORLIST(state, floorList) {
+    state.floorList = floorList
   },
 }
 //actions:处理action，可以书写自己的业务逻辑，也可以处理异步
@@ -31,6 +36,13 @@ const actions = {
     let result = await reqGetBannerList()
     if (result.code == 200) {
       context.commit('GETBANNERLIST', result.data)
+    }
+  },
+  //获取floor数据
+  async getFloorList(context) {
+    let result = await reqFloorList()
+    if (result.code == 200) {
+      context.commit('GETFLOORLIST', result.data)
     }
   },
 }
