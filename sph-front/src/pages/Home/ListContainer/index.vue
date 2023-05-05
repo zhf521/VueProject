@@ -108,14 +108,36 @@ export default {
   mounted() {
     //派发action；通过Vuex发起Ajax请求，将数据存储在仓库中
     this.$store.dispatch('getBannerList')
-    //在new Swiper实例之前，页面中结构必须要有
-    //因为dispatch当中涉及到异步语句，导致v-for遍历的时候结构还没有完全，因此不行
-
   },
   computed: {
     ...mapState({
       bannerList: state => state.home.bannerList
     })
+  },
+  watch: {
+    //监听bannerList数据的变化：因为这条数据发生过变化---由空数组变为数组里面有四个元素
+    bannerList: {
+      handler(newValue, oldValue) {
+        this.$nextTick(() => {
+          //当执行回调时，保证服务器数据回来了，v-for执行完毕了（轮播图的结构已经有了）
+          //通过watch监听bannerList属性的属性值的变化
+          let mySwiper = new Swiper(document.querySelector('.swiper-container'), {
+            loop: true,
+            //如果需要分页器
+            pagination: {
+              el: '.swiper-pagination',
+              //点击小球的时候也切换图片
+              clickable: true,
+            },
+            //如果需要前进后退按钮
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev'
+            }
+          })
+        })
+      }
+    }
   }
 }
 </script>
