@@ -10,6 +10,8 @@ import router from './router'
 import store from './store'
 //引入mockServer.js
 import './mock/mockServer'
+//引入swiper样式
+import 'swiper/css/swiper.css'
 Vue.config.productionTip = false
 new Vue({
   render: (h) => h(App),

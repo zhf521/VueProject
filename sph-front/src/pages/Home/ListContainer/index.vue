@@ -6,18 +6,9 @@
         <!--banner轮播-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner1.jpg" />
+            <div class="swiper-slide" v-for="(carousel, index) in bannerList" :key="carousel.id">
+              <img :src="carousel.imgUrl" />
             </div>
-            <!-- <div class="swiper-slide">
-              <img src="./images/banner2.jpg" />
-            </div> -->
-            <!-- <div class="swiper-slide">
-              <img src="./images/banner3.jpg" />
-            </div> -->
-            <!-- <div class="swiper-slide">
-              <img src="./images/banner4.jpg" />
-            </div> -->
           </div>
           <!-- 如果需要分页器 -->
           <div class="swiper-pagination"></div>
@@ -111,15 +102,19 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import Swiper from 'swiper'
 export default {
   name: 'ListContainer',
   mounted() {
     //派发action；通过Vuex发起Ajax请求，将数据存储在仓库中
     this.$store.dispatch('getBannerList')
+    //在new Swiper实例之前，页面中结构必须要有
+    //因为dispatch当中涉及到异步语句，导致v-for遍历的时候结构还没有完全，因此不行
+
   },
   computed: {
     ...mapState({
-      bannerList:state=>state.home.bannerList
+      bannerList: state => state.home.bannerList
     })
   }
 }
