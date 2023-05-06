@@ -12,11 +12,13 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
+            <!-- 分类的面包屑 -->
             <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}<i
                 @click="removeCategoryName">×</i></li>
+            <!-- 关键字面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }}<i @click="removeKeyword">×</i></li>
           </ul>
         </div>
-
         <!--selector-->
         <SearchSelector />
 
@@ -178,6 +180,13 @@ export default {
       if (this.$route.params) {
         this.$router.push({ name: 'search', params: this.$route.params })
       }
+    },
+    //删除关键字
+    removeKeyword() {
+      //给服务器带的参数searchParams的keyword置空
+      this.searchParams.keyword = undefined
+      //再次发请求
+      this.getData()
     }
   },
   //数据监听：监听组件实例身上的属性的属性值变化
