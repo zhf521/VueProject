@@ -15,12 +15,15 @@
             <!-- 分类的面包屑 -->
             <li class="with-x" v-if="searchParams.categoryName">{{ searchParams.categoryName }}<i
                 @click="removeCategoryName">×</i></li>
-            <!-- 关键字面包屑 -->
+            <!-- 关键字的面包屑 -->
             <li class="with-x" v-if="searchParams.keyword">{{ searchParams.keyword }}<i @click="removeKeyword">×</i></li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(':')[1] }}<i
+                @click="removeTrademark">×</i></li>
           </ul>
         </div>
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -186,6 +189,26 @@ export default {
       //给服务器带的参数searchParams的keyword置空
       this.searchParams.keyword = undefined
       //再次发请求
+      this.getData()
+      //通知兄弟组件Header组件清除关键字
+      this.$bus.$emit('clear')
+      //进行路由跳转
+      if (this.$route.query) {
+        this.$router.push({ name: 'search', query: this.$route.query })
+      }
+    },
+    //自定义事件回调
+    trademarkInfo(trademark) {
+      //整理品牌字段的参数
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`
+      //再次发请求获取search模块列表数据进行展示
+      this.getData()
+    },
+    //删除品牌的信息
+    removeTrademark() {
+      //将品牌信息置空
+      this.searchParams.trademark = undefined
+      //再次发送请求
       this.getData()
     }
   },
