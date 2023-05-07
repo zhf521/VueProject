@@ -20,34 +20,26 @@
             <!-- 品牌的面包屑 -->
             <li class="with-x" v-if="searchParams.trademark">{{ searchParams.trademark.split(':')[1] }}<i
                 @click="removeTrademark">×</i></li>
+            <!-- 平台的售卖属性值的面包屑 -->
+            <li class="with-x" v-for="(attrValue, index) in searchParams.props" :key="index">{{ attrValue.split(':')[1]
+            }}<i @click="removeAttr(index)">x</i></li>
           </ul>
         </div>
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo" />
-
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
-              <!-- 价格结构 -->
+              <!-- 排序结构 -->
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOne }" @click="changeOrder('1')">
+                  <a>综合<span v-show="isOne" class="iconfont"
+                      :class="{ 'icon-xiangshangjiantoucuxiao': isAsc, 'icon-xiangxiajiantoucuxiao': isDesc }"></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isTwo }" @click="changeOrder('2')">
+                  <a>价格<span v-show="isTwo" class="iconfont"
+                      :class="{ 'icon-xiangshangjiantoucuxiao': isAsc, 'icon-xiangxiajiantoucuxiao': isDesc }"></span></a>
                 </li>
               </ul>
             </div>
@@ -139,7 +131,7 @@ export default {
         //关键字
         keyword: "",
         //排序
-        order: "",
+        order: "1:desc",
         //分页器：代表的是当前是第几页
         pageNo: 1,
         //代表的是每一个展示数据个数
@@ -162,7 +154,19 @@ export default {
   },
   computed: {
     //mapGetters里面的写法：传递的数组，因为getters计算的是没有划分模块
-    ...mapGetters(['goodsList'])
+    ...mapGetters(['goodsList']),
+    isOne() {
+      return this.searchParams.order.indexOf('1') != -1
+    },
+    isTwo() {
+      return this.searchParams.order.indexOf('2') != -1
+    },
+    isAsc() {
+      return this.searchParams.order.indexOf('asc') != -1
+    },
+    isDesc() {
+      return this.searchParams.order.indexOf('desc') != -1
+    }
   },
   methods: {
     //向服务器发请求获取search模块数据（根据参数不同返回不同的数据进行展示）
@@ -209,6 +213,41 @@ export default {
       //将品牌信息置空
       this.searchParams.trademark = undefined
       //再次发送请求
+      this.getData()
+    },
+    //收集平台属性地方
+    attrInfo(attr, attrValue) {
+      //console.log(attr, attrValue)
+      //参数格式整理好
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`
+      //数组去重
+      if (this.searchParams.props.indexOf(props) == -1) {
+        this.searchParams.props.push(props)
+      }
+      //再次发请求
+      this.getData()
+    },
+    //删除售卖属性
+    removeAttr(index) {
+      //console.log(index)
+      //再次整理参数
+      this.searchParams.props.splice(index, 1)
+      //再次发请求
+      this.getData()
+    },
+    //排序的操作
+    changeOrder(flag) {
+      //flag形参：一个标记，代表用户点击的是综合还是价格
+      let originOrder = this.searchParams.order
+      let originFlag = this.searchParams.order.split(':')[0]
+      let originSort = this.searchParams.order.split(':')[1]
+      let newOrder = ''
+      if (flag == originFlag) {
+        newOrder = `${originFlag}:${originSort == 'desc' ? 'asc' : 'desc'}`
+      } else {
+        newOrder = `${flag}:${'desc'}`
+      }
+      this.searchParams.order = newOrder
       this.getData()
     }
   },
