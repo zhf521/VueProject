@@ -73,35 +73,9 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5"
+            @getPageNo="getPageNo">
+          </Pagination>
         </div>
       </div>
     </div>
@@ -110,7 +84,7 @@
 
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Search',
   components: {
@@ -141,7 +115,6 @@ export default {
         //品牌
         trademark: ""
       }
-
     }
   },
   //当组件挂载完毕之前执行一次
@@ -166,7 +139,11 @@ export default {
     },
     isDesc() {
       return this.searchParams.order.indexOf('desc') != -1
-    }
+    },
+    //获取search模块展示产品一共多少数据
+    ...mapState({
+      total: state => state.search.searchList.total
+    })
   },
   methods: {
     //向服务器发请求获取search模块数据（根据参数不同返回不同的数据进行展示）
@@ -248,6 +225,12 @@ export default {
         newOrder = `${flag}:${'desc'}`
       }
       this.searchParams.order = newOrder
+      this.getData()
+    },
+    //自定义事件的回调函数--获取当前第几页
+    getPageNo(pageNo) {
+      //console.log(pageNo)
+      this.searchParams.pageNo = pageNo
       this.getData()
     }
   },
