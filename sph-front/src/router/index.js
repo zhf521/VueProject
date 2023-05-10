@@ -1,7 +1,6 @@
 //配置路由的地方
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 //使用插件
 Vue.use(VueRouter)
 //引入路由组件
@@ -9,6 +8,7 @@ import Home from '../pages/Home'
 import Search from '../pages/Search'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import Detail from '../pages/Detail'
 //先把VueRouter原型对象的push和replace保存一份
 let originPush = VueRouter.prototype.push
 let originReplace = VueRouter.prototype.replace
@@ -49,6 +49,11 @@ export default new VueRouter({
   //配置路由
   routes: [
     {
+      path: '/detail/:skuid',
+      component: Detail,
+      meta: { show: true },
+    },
+    {
       path: '/home',
       component: Home,
       meta: { show: true },
@@ -75,4 +80,9 @@ export default new VueRouter({
       redirect: '/home',
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // return 期望滚动到哪个的位置
+    return {  y: 0 }
+  },
+  
 })
