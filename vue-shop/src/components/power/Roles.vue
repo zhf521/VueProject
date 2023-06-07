@@ -65,7 +65,7 @@
       </el-row>
     </el-card>
     <!-- 分配权限的对话框 -->
-    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%" @close="serRightDialogClosed">
+    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%" @close="setRightDialogClosed">
       <!-- 树形控件 -->
       <el-tree :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all
         :default-checked-keys="defKeys" ref="treeRef"></el-tree>
@@ -195,7 +195,7 @@ export default {
       node.children.forEach(item => this.getLeafKeys(item, arr))
     },
     //监听分配权限对话框的关闭事件
-    serRightDialogClosed() {
+    setRightDialogClosed() {
       this.defKeys = []
     },
     //点击为角色分配权限
@@ -223,9 +223,9 @@ export default {
         //可以发起添加角色的网络请求
         const { data: res } = await this.$http.post('roles', this.addForm)
         if (res.meta.status !== 201) {
-          this.$message.error('添加用户失败！')
+          this.$message.error('添加角色失败！')
         }
-        this.$message.success('添加用户成功！')
+        this.$message.success('添加角色成功！')
         //隐藏添加角色的对话框
         this.addDialogVisible = false
         //重新获取角色列表数据
@@ -264,7 +264,7 @@ export default {
     },
     //删除角色
     async removeRoleById(id) {
-      //弹框询问用户是否删除数据
+      //弹框询问角色是否删除数据
       const confirmResult = await this.$confirm('此操作将删除该角色，是否继续', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -275,9 +275,9 @@ export default {
       }
       const { data: res } = await this.$http.delete('roles/' + id)
       if (res.meta.status !== 200) {
-        return this.$message.error('删除用户失败！')
+        return this.$message.error('删除角色失败！')
       }
-      this.$message.success('删除用户成功！')
+      this.$message.success('删除角色成功！')
       this.getRoleList()
     },
   }
