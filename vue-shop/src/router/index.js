@@ -9,6 +9,7 @@ import Rights from '../components/power/Rights.vue'
 import Roles from '../components/power/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
+import Orders from '../components/orders/Orders.vue'
 
 //创建并暴露router实例对象，去管理路由规则
 
@@ -27,6 +28,7 @@ const router = new VueRouter({
         { path: '/roles', component: Roles },
         { path: '/categories', component: Cate },
         { path: '/params', component: Params },
+        { path: '/orders', component: Orders },
       ],
     },
   ],
