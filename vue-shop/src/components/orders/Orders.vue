@@ -62,12 +62,9 @@
       </span>
     </el-dialog>
     <!-- 展示物流进度的对话框 -->
-    <el-dialog
-    title="物流进度"
-    :visible.sync="progressVisible"
-    width="50%">
-    <span>这是一段信息</span>
-  </el-dialog>
+    <el-dialog title="物流进度" :visible.sync="progressVisible" width="50%">
+      <span>这是一段信息</span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -94,7 +91,7 @@ export default {
       },
       cityDate: cityDate,
       progressVisible: false,
-      progressInfo,
+      progressInfo: '',
     }
   },
   created() {
@@ -120,6 +117,9 @@ export default {
     //展示修改地址的对话框
     showBox() {
       this.addressVisible = true
+    },
+    showProgressBox() {
+      this.progressVisible = true
     },
     addressDialogClosed() {
       this.$ref.addressFormRef.resetFields()
