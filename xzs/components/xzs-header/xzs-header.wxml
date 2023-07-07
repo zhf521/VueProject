@@ -1,0 +1,9 @@
+<view class="header">
+  <navigator url="/pages/index/index" class="logo">
+  <image src="/images/logo.jpg" mode="heightFix" class="pic"/>
+  </navigator>
+
+  <view class="phone">
+    <van-icon name="phone-o" bindtap="clickPhone" />
+  </view>
+</view>
