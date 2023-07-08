@@ -1,9 +1,9 @@
 <template>
   <div class="app">
-    <TodoHeader>
+    <TodoHeader :addTodo="addTodo">
     </TodoHeader>
-    <TodoList></TodoList>
-    <TodoFooter></TodoFooter>
+    <TodoList :todos="todos" :deleteTodo="deleteTodo"></TodoList>
+    <TodoFooter :todos="todos" :checkAll="checkAll" :deleteCompleteTodos="deleteCompleteTodos"></TodoFooter>
   </div>
 </template>
 
@@ -17,6 +17,35 @@ export default {
     TodoHeader,
     TodoList,
     TodoFooter
+  },
+  data() {
+    return {
+      todos: JSON.parse(localStorage.getItem('todos')) || [
+        // { title: '123', finish: false, }
+      ]
+    }
+  },
+  methods: {
+    addTodo(todo) {
+      this.todos.unshift(todo)
+    },
+    deleteTodo(index) {
+      this.todos.splice(index, 1)
+    },
+    checkAll(check) {
+      this.todos.forEach(todo => todo.finish = check)
+    },
+    deleteCompleteTodos() {
+      this.todos = this.todos.filter(item => !item.finish)
+    }
+  },
+  watch: {
+    todos: {
+      deep: true,
+      handler(value) {
+        localStorage.setItem('todos', JSON.stringify(value))
+      }
+    }
   }
 }
 </script>
