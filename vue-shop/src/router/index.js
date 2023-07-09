@@ -32,6 +32,11 @@ const Cate = () =>
   import(/* webpackChunkName: "cate_params" */ '../components/goods/Cate.vue')
 const Params = () =>
   import(/* webpackChunkName: "cate_params" */ '../components/goods/Params.vue')
+const Add = () =>
+  import(/* webpackChunkName: "cate_params" */ '../components/goods/Add.vue')
+
+const List = () =>
+  import(/* webpackChunkName: "cate_params" */ '../components/goods/List.vue')
 
 // import Orders from '../components/orders/Orders.vue'
 // import Report from '../components/report/Report.vue'
